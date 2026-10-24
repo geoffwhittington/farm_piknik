@@ -1,0 +1,14 @@
+{
+    "name": "piknik/farm_piknik",
+    "description": "Connect a farmOS site to the Piknik local food marketplace.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Geoff Whittington"
+        }
+    ],
+    "require": {
+        "farmos/farmos": "^4"
+    }
+}
