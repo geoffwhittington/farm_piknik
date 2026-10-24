@@ -1,0 +1,169 @@
+.farm-piknik-status {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1rem;
+  max-width: 40rem;
+  border: 1px solid var(--gin-border-color, #d4d4d8);
+  border-radius: 0.35rem;
+  background: var(--gin-bg-layer2, transparent);
+}
+
+/* Settings page only. Gin setup rhythm: xxl between sections, l inside a panel. */
+.farm-piknik-settings .farm-piknik-intro {
+  margin-bottom: var(--gin-spacing-xxl, 3rem);
+}
+
+.farm-piknik-settings .farm-piknik-status {
+  margin: 0 0 var(--gin-spacing-xxl, 3rem);
+  padding: var(--gin-spacing-l, 1.5rem) var(--gin-spacing-xl, 2rem);
+}
+
+.farm-piknik-settings .farm-piknik-status p {
+  margin: 0 0 var(--gin-spacing-m, 1rem);
+}
+
+.farm-piknik-settings .farm-piknik-status.is-connected {
+  padding-bottom: var(--gin-spacing-m, 1rem);
+}
+
+.farm-piknik-settings .farm-piknik-status .farm-piknik-summary {
+  margin: 0 0 var(--gin-spacing-s, 0.75rem);
+  border: 0;
+}
+
+.farm-piknik-settings .farm-piknik-status .farm-piknik-summary__row {
+  margin-bottom: 0;
+}
+
+.farm-piknik-settings .farm-piknik-status .farm-piknik-stage__actions {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.farm-piknik-settings .farm-piknik-status .button {
+  margin: 0;
+}
+
+.farm-piknik-settings .farm-piknik-status p.farm-piknik-test {
+  margin: var(--gin-spacing-xs, 0.5rem) 0 0;
+  font-weight: 600;
+}
+
+.farm-piknik-test.is-ok {
+  color: var(--gin-color-primary, #047857);
+}
+
+.farm-piknik-test.is-fail {
+  color: var(--gin-color-danger, #b91c1c);
+}
+
+.farm-piknik-settings .farm-piknik-stage {
+  margin-top: var(--gin-spacing-xxl, 3rem);
+}
+
+.farm-piknik-status p {
+  margin: 0;
+}
+
+.farm-piknik-status.is-connected {
+  background: #f3f4f6;
+  border-color: #d4d4d8;
+}
+
+.gin--dark-mode .farm-piknik-status.is-connected {
+  background: #292524;
+  border-color: #57534e;
+}
+
+/* Gin paints every main-block form as a white card. The board is not one. */
+.block-system-main-block > form.farm-piknik-board {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.farm-piknik-marketplace .farm-piknik-board__primary--embedded {
+  margin: 0 0 1.5rem;
+  padding: 0 0 1.25rem;
+  max-width: none;
+  border: 0;
+  border-bottom: 1px solid var(--gin-border-color, #e4e4e7);
+  border-radius: 0;
+  background: transparent;
+}
+
+.farm-piknik-place-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--gin-border-color, #d4d4d8);
+  border-radius: 0.35rem;
+  background: var(--gin-bg-layer4, #e2e5ec);
+}
+
+.farm-piknik-place-card .farm-piknik-place {
+  margin: 0;
+}
+
+.farm-piknik-place__description {
+  margin: 0.5rem 0 0;
+}
+
+.farm-piknik-place-card .farm-piknik-stage__actions {
+  margin-top: 0.75rem;
+}
+
+.farm-piknik-place-card .button {
+  margin: 0;
+}
+
+.farm-piknik-place {
+  margin: 0 0 1.25rem;
+  font-size: 1.125rem;
+}
+
+.farm-piknik-place__emoji {
+  margin-right: 0.25rem;
+}
+
+.farm-piknik-status .farm-piknik-stage__actions {
+  margin-top: 0.75rem;
+}
+
+.farm-piknik-stage {
+  margin: 1.5rem 0 0;
+  max-width: 40rem;
+}
+
+.farm-piknik-summary {
+  margin: 0 0 1rem;
+}
+
+.farm-piknik-summary__row {
+  margin: 0 0 0.65rem;
+}
+
+.farm-piknik-summary dt {
+  font-weight: 600;
+}
+
+.farm-piknik-summary dd {
+  margin: 0.15rem 0 0;
+}
+
+.farm-piknik-stage__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.farm-piknik-credential-link {
+  font-weight: 600;
+}

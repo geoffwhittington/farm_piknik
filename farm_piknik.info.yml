@@ -1,4 +1,4 @@
-name: Piknik.Spot
+name: Piknik
 description: 'Connect your farm to Piknik, a local food marketplace.'
 type: module
 # farmOS Contrib = appears on setup "Community modules" as an opt-in checkbox.

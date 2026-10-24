@@ -4,6 +4,11 @@ wordmark:
       css/wordmark.css: {}
       css/triggers.css: {}
 
+settings:
+  css:
+    theme:
+      css/settings.css: {}
+
 toolbar:
   css:
     theme:

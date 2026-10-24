@@ -1,4 +1,7 @@
 services:
+  farm_piknik.connection_probe:
+    class: Drupal\farm_piknik\ConnectionProbe
+    arguments: ['@farm_oauth_client.connection', '@farm_oauth_client.http']
   farm_piknik.places:
     class: Drupal\farm_piknik\PlaceDirectory
     arguments: ['@farm_oauth_client.flow', '@farm_oauth_client.http', '@farm_oauth_client.connection']

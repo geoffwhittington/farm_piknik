@@ -7,7 +7,7 @@ farm_piknik.board:
   weight: 101
 
 farm_piknik.settings:
-  title: Piknik.Spot
+  title: Piknik
   description: Connect this farm to your local food system
   parent: farm.setup
   route_name: farm_piknik.settings

@@ -21,6 +21,9 @@ final class ConnectionFields {
 
   public const ADDRESS = 'https://piknik.spot';
 
+  /** Shown in the secret box when one is saved. Not the secret itself. */
+  public const SECRET_MASK = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+
   public static function testing(): bool {
     return Settings::get('farm_oauth_client_allow_local_http') === TRUE;
   }
@@ -39,12 +42,7 @@ final class ConnectionFields {
         '#maxlength' => 128,
         '#weight' => 30,
       ],
-      'client_secret' => [
-        '#type' => 'password',
-        '#title' => t('Client secret'),
-        '#description' => t('Leave blank to keep the saved secret.'),
-        '#weight' => 40,
-      ],
+      'client_secret' => self::secretField($connection),
       'callback' => [
         '#type' => 'textfield',
         '#title' => t('Callback URL'),
@@ -60,19 +58,13 @@ final class ConnectionFields {
 
   public static function validate(FormStateInterface $form_state, Connection $connection, SecretBox $secrets): void {
     self::validateCallback($form_state);
-    if (self::testing()) {
-      try {
-        $form_state->setValue('base_url', PublicHttps::pin((string) $form_state->getValue('base_url'))['url']);
-      }
-      catch (\InvalidArgumentException $e) {
-        $form_state->setErrorByName('base_url', $e->getMessage());
-      }
-    }
+    self::validateAddress($form_state);
     $client_id = trim((string) $form_state->getValue('client_id'));
     if (!preg_match('/^[A-Za-z0-9_-]{1,128}$/', $client_id)) {
       $form_state->setErrorByName('client_id', t('The client id contains characters this form does not accept.'));
     }
-    $secret = (string) $form_state->getValue('client_secret');
+    $secret = self::submittedSecret($form_state);
+    $form_state->setValue('client_secret', $secret);
     if ($secret === '' && !$connection->hasSecret('piknik')) {
       $form_state->setErrorByName('client_secret', t('The client secret is required the first time.'));
     }
@@ -85,11 +77,34 @@ final class ConnectionFields {
     $callback = trim((string) $form_state->getValue('callback'));
     $connection->saveRedirect('piknik', $callback === SiteCallback::url('piknik') ? '' : $callback);
     $base = self::testing() ? (string) $form_state->getValue('base_url') : self::ADDRESS;
-    $secret = (string) $form_state->getValue('client_secret');
+    $secret = self::submittedSecret($form_state);
     $connection->saveApp('piknik', $base, trim((string) $form_state->getValue('client_id')), $secret);
     if ($secret !== '') {
       sodium_memzero($secret);
     }
+  }
+
+  /**
+   * @return array<string, mixed>
+   */
+  private static function secretField(Connection $connection): array {
+    $field = [
+      '#type' => 'password',
+      '#title' => t('Client secret'),
+      '#description' => t('Leave blank to keep the saved secret.'),
+      '#weight' => 40,
+    ];
+    if (!$connection->hasSecret('piknik')) {
+      return $field;
+    }
+    $field['#attributes']['value'] = self::SECRET_MASK;
+    $field['#description'] = t('A secret is saved, shown here as a mask. Leave the mask or clear the field to keep it.');
+    return $field;
+  }
+
+  private static function submittedSecret(FormStateInterface $form_state): string {
+    $secret = (string) $form_state->getValue('client_secret');
+    return $secret === self::SECRET_MASK ? '' : $secret;
   }
 
   /**
@@ -107,10 +122,36 @@ final class ConnectionFields {
     return [
       '#type' => 'url',
       '#title' => t('Piknik address'),
-      '#default_value' => $connection->baseUrl('piknik'),
+      '#default_value' => self::localAddress($connection),
       '#maxlength' => 255,
       '#weight' => 20,
     ];
+  }
+
+  public static function addressIsSet(Connection $connection): bool {
+    return !self::testing() || $connection->baseUrl('piknik') !== '';
+  }
+
+  public static function validateAddress(FormStateInterface $form_state): void {
+    if (!self::testing()) {
+      return;
+    }
+    try {
+      $form_state->setValue('base_url', PublicHttps::pin((string) $form_state->getValue('base_url'))['url']);
+    }
+    catch (\InvalidArgumentException $e) {
+      $form_state->setErrorByName('base_url', $e->getMessage());
+    }
+  }
+
+  public static function storeAddress(FormStateInterface $form_state, Connection $connection): void {
+    $base = self::testing() ? (string) $form_state->getValue('base_url') : self::ADDRESS;
+    $connection->saveApp('piknik', $base, $connection->clientId('piknik'), '');
+  }
+
+  private static function localAddress(Connection $connection): string {
+    $saved = $connection->baseUrl('piknik');
+    return $saved !== '' ? $saved : 'http://localhost:3000';
   }
 
   private static function validateCallback(FormStateInterface $form_state): void {

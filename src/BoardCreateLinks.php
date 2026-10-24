@@ -17,10 +17,14 @@ final class BoardCreateLinks {
   /**
    * @return array<string, mixed>
    */
-  public function build(): array {
+  public function build(bool $embedded = FALSE): array {
+    $classes = ['farm-piknik-board__primary'];
+    if ($embedded) {
+      $classes[] = 'farm-piknik-board__primary--embedded';
+    }
     return [
       '#type' => 'container',
-      '#attributes' => ['class' => ['farm-piknik-board__primary']],
+      '#attributes' => ['class' => $classes],
       'heading' => [
         '#type' => 'html_tag',
         '#tag' => 'h2',

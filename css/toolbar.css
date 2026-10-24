@@ -1,12 +1,17 @@
 /**
- * Piknik board toolbar icon — brand favicon (multi-color).
- * Class: toolbar-icon-farm-piknik-board (from farm_piknik.board menu link).
+ * Piknik menu icons. Same mask treatment as the FarmOS toolbar icons.
+ * Shopping cart from the Gin icon set (commerce).
  */
 
 .toolbar .toolbar-bar .toolbar-menu-administration .toolbar-icon-farm-piknik-board::before,
-.toolbar .toolbar-bar .toolbar-menu-administration .toolbar-icon-farm-piknik-board:hover::before,
-.toolbar .toolbar-bar .toolbar-menu-administration .toolbar-icon-farm-piknik-board.is-active::before {
-  background: transparent url("../images/piknik-favicon.svg") center / var(--gin-icon-size-toolbar, 1.25rem) no-repeat !important;
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
+.toolbar .toolbar-bar .toolbar-menu-administration .toolbar-icon-farm-piknik-settings::before {
+  background-image: none !important;
+  -webkit-mask-image: url("../images/marketplace.svg") !important;
+  mask-image: url("../images/marketplace.svg") !important;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: var(--gin-icon-size-toolbar, 1.25rem);
+  mask-size: var(--gin-icon-size-toolbar, 1.25rem);
 }

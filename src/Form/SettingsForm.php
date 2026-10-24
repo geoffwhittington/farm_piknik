@@ -13,9 +13,8 @@ use Drupal\farm_oauth_client\OAuthFlow;
 use Drupal\farm_oauth_client\SecretBox;
 use Drupal\farm_piknik\ConnectionFields;
 use Drupal\farm_piknik\PlaceDirectory;
-use Drupal\farm_piknik\PlaceField;
-use Drupal\farm_piknik\SettingsLayout;
-use Drupal\farm_piknik\Wordmark;
+use Drupal\farm_piknik\ConnectionProbe;
+use Drupal\farm_piknik\SettingsPage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,6 +28,7 @@ final class SettingsForm extends FormBase {
     private Connection $connection,
     private SecretBox $secrets,
     private PlaceDirectory $places,
+    private ConnectionProbe $probe,
   ) {}
 
   public static function create(ContainerInterface $container): static {
@@ -38,6 +38,7 @@ final class SettingsForm extends FormBase {
       $container->get('farm_oauth_client.connection'),
       $container->get('farm_oauth_client.secrets'),
       $container->get('farm_piknik.places'),
+      $container->get('farm_piknik.connection_probe'),
     );
   }
 
@@ -46,45 +47,94 @@ final class SettingsForm extends FormBase {
   }
 
   public function buildForm(array $form, FormStateInterface $form_state): array {
-    $connected = $this->flow->connected('piknik');
     $form['#attached']['library'][] = 'farm_piknik/wordmark';
+    $form['#attached']['library'][] = 'farm_piknik/settings';
     $form['#attributes']['class'][] = 'farm-piknik-settings';
-    $form['wordmark'] = Wordmark::element();
-    $form['connection'] = (new SettingsLayout())->connection($connected, $this->connection);
-    if ($connected) {
-      $form['connection']['participant_id'] = (new PlaceField())->build($this->places, $this->state, $this->messenger());
-      $form['connection']['participant_id']['#weight'] = 5;
-    }
-    $form['actions'] = [
-      '#type' => 'actions',
-      '#weight' => 100,
-      'submit' => [
-        '#type' => 'submit',
-        '#value' => $this->t('Save'),
-        '#name' => 'save',
-      ],
-    ];
+    $tested = $form_state->get('connection_test');
+    $form += (new SettingsPage())->build(
+      $this->flow->connected('piknik'),
+      (bool) $form_state->get('connection_open'),
+      $this->connection,
+      is_string($tested) ? $tested : '',
+    );
     return $form;
   }
 
   public function validateForm(array &$form, FormStateInterface $form_state): void {
-    if (($form_state->getTriggeringElement()['#name'] ?? '') === 'disconnect') {
+    $name = (string) ($form_state->getTriggeringElement()['#name'] ?? '');
+    if ($name === 'continue_address') {
+      ConnectionFields::validateAddress($form_state);
+      return;
+    }
+    if ($name !== 'save') {
       return;
     }
     ConnectionFields::validate($form_state, $this->connection, $this->secrets);
   }
 
-  public function submitForm(array &$form, FormStateInterface $form_state): void {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {}
+
+  public function saveAddress(array &$form, FormStateInterface $form_state): void {
+    ConnectionFields::storeAddress($form_state, $this->connection);
+    $form_state->setRebuild(TRUE);
+    $this->messenger()->addStatus($this->t('Piknik address saved.'));
+  }
+
+  public function saveCredentials(array &$form, FormStateInterface $form_state): void {
     ConnectionFields::store($form_state, $this->connection);
+    $form_state->set('connection_open', FALSE);
+    $form_state->setRebuild(TRUE);
+    $this->messenger()->addStatus($this->t('Sign-in details saved.'));
+  }
+
+  public function openConnection(array &$form, FormStateInterface $form_state): void {
+    $form_state->set('connection_open', TRUE);
+    $form_state->set('place_open', FALSE);
+    $form_state->setRebuild(TRUE);
+  }
+
+  public function closeConnection(array &$form, FormStateInterface $form_state): void {
+    $form_state->set('connection_open', FALSE);
+    $form_state->setRebuild(TRUE);
+  }
+
+  public function openPlace(array &$form, FormStateInterface $form_state): void {
+    $form_state->set('place_open', TRUE);
+    $form_state->set('connection_open', FALSE);
+    $form_state->setRebuild(TRUE);
+  }
+
+  public function closePlace(array &$form, FormStateInterface $form_state): void {
+    $form_state->set('place_open', FALSE);
+    $form_state->setRebuild(TRUE);
+  }
+
+  public function savePlace(array &$form, FormStateInterface $form_state): void {
     $this->storePlace($form_state);
-    $this->messenger()->addStatus($this->t('Piknik connection settings saved.'));
+    $form_state->set('place_open', FALSE);
+    $form_state->setRebuild(TRUE);
+    $this->messenger()->addStatus($this->t('Place saved.'));
   }
 
   public function signIn(array &$form, FormStateInterface $form_state): void {
-    ConnectionFields::store($form_state, $this->connection);
+    if ($form_state->hasValue('client_id')) {
+      ConnectionFields::store($form_state, $this->connection);
+    }
     $url = Url::fromRoute('farm_oauth_client.connect', ['provider' => 'piknik']);
     $url->setOption('query', ['token' => \Drupal::csrfToken()->get($url->getInternalPath())]);
     $form_state->setRedirectUrl($url);
+  }
+
+  public function testConnection(array &$form, FormStateInterface $form_state): void {
+    $ok = FALSE;
+    try {
+      $ok = $this->probe->credentialsWork();
+    }
+    catch (\Throwable) {
+      $ok = FALSE;
+    }
+    $form_state->set('connection_test', $ok ? 'ok' : 'fail');
+    $form_state->setRebuild(TRUE);
   }
 
   public function disconnect(array &$form, FormStateInterface $form_state): void {
