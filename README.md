@@ -32,14 +32,14 @@ This farmOS module provides:
 
 ## Installation
 
-### Method 1: Composer (recommended)
+### Method 1: Composer (recommended when published)
 
 ```bash
 cd /path/to/farmos
-composer require geoffwhittington/farm_piknik
+composer require piknik/farm_piknik
 ```
 
-This will download the module and its dependencies to the appropriate directory.
+Note: This requires the module to be published to Packagist. Until then, use manual installation.
 
 ### Method 2: Manual installation
 
@@ -47,9 +47,9 @@ If you cannot use Composer, you can install the module manually:
 
 1. Download or clone this repository
 2. Copy the entire `farm_piknik` directory to your farmOS modules directory:
-   - Docker: `/opt/drupal/web/sites/all/modules/farm_piknik`
-   - Standard: `/var/www/html/sites/all/modules/farm_piknik`
-3. Ensure the `farm_oauth_client` submodule is present in `modules/farm_oauth_client/`
+   - Docker: `/opt/drupal/web/modules/farm/farm_piknik`
+   - Standard: `/var/www/html/web/modules/farm/farm_piknik`
+3. Ensure the `farm_oauth_client` submodule is present in `modules/farm/farm_oauth_client/`
 
 The module should now be available for installation.
 
