@@ -20,6 +20,7 @@ final class OAuthFlow {
     private PinnedRequest $http,
     private PrivateTempStoreFactory $tempStore,
     private SecretBox $secrets,
+    private TokenRevoke $revoke,
   ) {}
 
   public function callbackUrl(string $provider): string {
