@@ -32,14 +32,20 @@ This farmOS module provides:
 
 ## Installation
 
-### Method 1: Composer (recommended when published)
+### Method 1: Composer (recommended when published on drupal.org)
 
 ```bash
 cd /path/to/farmos
-composer require piknik/farm_piknik
+composer require drupal/farm_piknik
 ```
 
-Note: This requires the module to be published to Packagist. Until then, use manual installation.
+Note: This requires the module to be published as a project on drupal.org. Once published, it will be automatically available on packages.drupal.org under the `drupal/` namespace. Until then, use manual installation below.
+
+To publish on drupal.org:
+1. Create a project at https://www.drupal.org/node/add/project-project
+2. Select "Module" as the project type
+3. Use `farm_piknik` as the project machine name
+4. The module will then be available via Composer as `drupal/farm_piknik`
 
 ### Method 2: Manual installation
 

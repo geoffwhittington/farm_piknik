@@ -1,5 +1,5 @@
 {
-    "name": "piknik/farm_piknik",
+    "name": "drupal/farm_piknik",
     "description": "Connect a farmOS site to the Piknik local food marketplace.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
