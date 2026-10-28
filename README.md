@@ -26,7 +26,7 @@ This farmOS module provides:
 
 ## Requirements
 
-- farmOS 2.x or 3.x
+- farmOS 4.x (Drupal 11)
 - `farm_harvest` module (for harvest-triggered listings)
 - `farm_oauth_client` module (included as a submodule)
 
