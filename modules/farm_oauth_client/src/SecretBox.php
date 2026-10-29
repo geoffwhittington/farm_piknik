@@ -42,9 +42,6 @@ final class SecretBox {
   private function key(): string {
     $encoded = Settings::get('farm_oauth_client_key');
     if (!is_string($encoded) || $encoded === '') {
-      $encoded = Settings::get('farm_piknik_key');
-    }
-    if (!is_string($encoded) || $encoded === '') {
       throw new \RuntimeException('farm_oauth_client_key is not set in settings.php.');
     }
     $key = base64_decode($encoded, TRUE);
